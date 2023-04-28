@@ -4,21 +4,22 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 grid_size = 50
-X,Y = np.meshgrid(np.linspace(-np.pi/2, np.pi/2 , grid_size),
-                  np.linspace(-np.pi/2, np.pi/2 , grid_size))
-
-Z=np.sin(X)*np.cos(Y)
-
-def anima(frame, X, Y, Z):
-    Z = np.sin(X+np.sin(frame/10)) * \
-        np.cos(Y-np.sin(frame/20)) + \
-        np.sin(X-Y)*np.cos(frame/10)
-    mat.set_data(Z)
-    return mat
+Z = np.random.rand(grid_size, grid_size)
+Z[Z>0.5] = 1
+Z[Z!=1] = 0
 
 fig, ax = plt.subplots()
-mat = ax.matshow(Z)
-anima = FuncAnimation(fig, anima, frames=200,
-                      fargs=(X,Y,Z), interval=5 )
+mat = ax.matshow(Z , cmap="plasma")
 
+def animate(frame, Z):
+    Z_copy = Z.astype(np.int32)
+    neighbors = sum(np.roll(np.roll(Z_copy, i, 0), j, 1)
+                    for i in (-1, 0, 1) for j in (-1, 0, 1)
+                    if (i != 0 or j != 0))
+    Z_copy = (neighbors == 3) | (Z_copy & (neighbors == 2)).astype(np.int32)
+    mat.set_data(Z_copy)
+    return [mat]
+
+
+anima = FuncAnimation(fig , animate, frames=100, fargs=(Z,))
 plt.show()
