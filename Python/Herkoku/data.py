@@ -1,28 +1,40 @@
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Wczytanie danych z pliku
-data = np.loadtxt('letters.data', delimiter=',')
+class Data:
+    def __init__(self, plik, data_set):
+        self.data_set = np.array(data_set)
+        self.plik = plik
+        self.my_pixels = np.array([])
+        self.my_expected_outputs = np.array([])
 
-# Podział danych na piksele i wektory odpowiedzi
-pixels = data[:, :35]
-expected_outputs = data[:, 35:]
+    def solve_data(self):
+        data = np.loadtxt(self.plik, delimiter=',')
 
-# Przykład wyświetlenia określonego zbioru
-example_set = [6, 7, 11, 17, 18, 20, 21, 23, 24, 25]
+        all_pixels = data[:, :35]
+        all_expected_outputs = data[:, 35:]
 
-for idx in example_set:
-    pixel = pixels[idx]
-    expected_output = expected_outputs[idx]
+        # My set [6, 7, 11, 17, 18, 20, 21, 23, 24, 25]
+        example_set = self.data_set
+        for idx in example_set:
+            self.my_pixels = np.append(self.my_pixels, all_pixels[idx])
+            self.my_expected_outputs = np.append(self.my_expected_outputs, all_expected_outputs[idx])
 
-    print(f"Przykład {idx}:")
-    print("Piksele: ", pixel)
-    print("Oczekiwane wyjście: ", expected_output)
-    print()
+        self.my_pixels = self.my_pixels.reshape((-1, 35))
+        self.my_expected_outputs = self.my_expected_outputs.reshape((-1, 26))
 
-    letter_image = pixel.reshape(7, 5)
-    reversed_cmap = plt.cm.get_cmap('gray_r')
-    plt.imshow(letter_image, reversed_cmap)
-    plt.axis('off')
-    plt.show()
+    def draw_data(self):
+        for idx, pixel in enumerate(self.my_pixels):
+            expected_output = self.my_expected_outputs[idx]
 
+            print(f"Przykład {idx}:")
+            print("Piksele: ", pixel)
+            print("Oczekiwane wyjście: ", expected_output)
+            print()
+
+            letter_image = pixel.reshape(7, 5)
+            reversed_cmap = plt.cm.get_cmap('gray_r')
+            plt.imshow(letter_image, cmap=reversed_cmap)
+            plt.axis('off')
+            plt.show()
