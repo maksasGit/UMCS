@@ -4,6 +4,8 @@ import os
 import matplotlib.pyplot as plt
 #from google.colab import files
 import io
+import networkx as nx
+
 
 color_map = plt.colormaps['gray']
 reversed_color_map = color_map.reversed()
@@ -13,7 +15,7 @@ reversed_color_map = color_map.reversed()
 
 class Perceptron(object):
 
-  def __init__(self, eta = 0.001, n_iter=50, random_state = 1):
+  def __init__(self, eta = 0.001, n_iter=10, random_state = 1):
     self.eta = eta
     self.n_iter = n_iter
     self.random_state = random_state
@@ -40,11 +42,10 @@ class Perceptron(object):
 
 class SLP(object):
 
-  def __init__(self, eta=0.05, n_iter=10, random_state=1):
+  def __init__(self, eta=0.001, n_iter=10, random_state=1):
     self.eta  = eta
     self.n_iter = n_iter
     self.random_state = random_state
-
 
   def fit(self, X, y):
     self.errors_ = None
