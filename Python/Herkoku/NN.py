@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import pandas as pd
 import os
@@ -15,7 +17,7 @@ reversed_color_map = color_map.reversed()
 
 class Perceptron(object):
 
-  def __init__(self, eta = 0.001, n_iter=10, random_state = 1):
+  def __init__(self, eta = 0.01, n_iter=30, random_state = 1):
     self.eta = eta
     self.n_iter = n_iter
     self.random_state = random_state
@@ -40,52 +42,52 @@ class Perceptron(object):
   def predict(self, X):
     return np.where(self.net_input(X) >= 0.0, 1, -1)
 
-class SLP(object):
 
+
+class SLP(object):
   def __init__(self, eta=0.001, n_iter=10, random_state=1):
     self.eta  = eta
     self.n_iter = n_iter
     self.random_state = random_state
 
   def fit(self, X, y):
-    self.errors_ = None
-    self.network = []
-    for i in range(0,len(X)):
-      self.network.append(Perceptron(eta = self.eta, n_iter = self.n_iter, random_state= self.random_state))
-    for i in range(0,len(X)):
-      self.network[i].fit(X,y[i])
-      if self.errors_ == None:
-        self.errors_ = np.array([self.network[i].errors_])
-      else:
-        self.errors_ += np.array([self.network[i].errors_])
-      self.errors_ = list(self.errors_)
-    return self.network
+    self.errors_ = np.zeros(y[0].shape)
+    self.perceptrons = [Perceptron(eta=self.eta, n_iter=self.n_iter, random_state=self.random_state) for _ in range(len(X))]
+    for perceptron, outputs in zip(self.perceptrons, y):
+      perceptron.fit(X, outputs)
+      self.errors_ += perceptron.errors_
+    return self.perceptrons
 
 
   def predict(self, X):
-    self.predictedArr = []
-    for i in range(0,len(X)):
-      self.predictedArr.append(self.network[i].predict(X))
-    return self.predictedArr
+      return [perceptron.predict(X) for perceptron in self.perceptrons]
 
-
-  def misclassified(self, X,y):
-    predictedForCompare = self.predict(X)
-    mis = 0
-    for i in range(0,len(X)):
-      for j in range(0,len(X)):
-        if predictedForCompare[i][j] != y[i][j]:
-          mis +=1
-    return mis
-
+  def misclassified(self, X, y):
+    slp_out = np.array(self.predict(X))
+    corr_out = np.array(y)
+    mistake = np.sum(slp_out != corr_out)
+    return mistake
 
   def show(self, X):
-    for pixel in X:
-      letter_image = pixel.reshape(7, 5)
-      reversed_cmap = plt.cm.get_cmap('gray_r')
-      plt.imshow(letter_image, cmap=reversed_cmap)
-      plt.axis('off')
-      plt.show()
+    num_images = len(X)
+    num_rows, num_cols = (5, 2)
+    total_plots = num_rows * num_cols
+
+    num_plots = min(num_images, total_plots)
+    figsize = (4 * num_cols, 4 * math.ceil(num_plots / num_cols))
+
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=figsize)
+    fig.tight_layout()
+
+    for i, ax in enumerate(axes.flatten()):
+      if i < num_images:
+        image = X[i].reshape(7, 5)
+        ax.imshow(image, cmap='gray_r')
+        ax.axis('off')
+      else:
+        ax.axis('off')
+
+    plt.show()
 
 
 

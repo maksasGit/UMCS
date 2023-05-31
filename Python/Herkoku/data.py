@@ -19,10 +19,13 @@ class Data:
         example_set = self.data_set
         for idx in example_set:
             self.my_pixels = np.append(self.my_pixels, all_pixels[idx])
-            self.my_expected_outputs = np.append(self.my_expected_outputs, all_expected_outputs[idx])
+            outputs = np.array([])
+            for id2 in example_set:
+                outputs = np.append(outputs, all_expected_outputs[idx][id2])
+            self.my_expected_outputs = np.append(self.my_expected_outputs, outputs)
 
         self.my_pixels = self.my_pixels.reshape((-1, 35))
-        self.my_expected_outputs = self.my_expected_outputs.reshape((-1, 26))
+        self.my_expected_outputs = self.my_expected_outputs.reshape((-1, 10))
 
     def draw_data(self):
         for idx, pixel in enumerate(self.my_pixels):
