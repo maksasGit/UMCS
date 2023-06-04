@@ -17,8 +17,9 @@ class Player(object):
             y = int(y)
             if (x>-1) and (x<3) and (y>-1) and (y<3):
                 return Move(int(x), int(y), self.sign)
+
             else:
-                print("Invalid field.Try Later!")
+                print("Invalid field. Try Again!")
 
 class Board(object):
     def __init__(self):
@@ -61,14 +62,19 @@ class Game(object):
                 current_player = player_one
             else:
                 current_player = player_two
-            move = current_player.get_move()
-            self.board.set_field(move)
-            self.board.get_state()
+            while True:
+                move = current_player.get_move()
+                if self.board.get_field(move.x, move.y) == ' ':
+                    self.board.set_field(move)
+                    break
+                else:
+                    print("Field is signed. Try Again!")
+            self.board.get_state()  
             if self.board.check_win(current_player.sign):
                 if current_player == player_one:
-                    return "You win"
+                    return "Player One win"
                 else:
-                    return "You lose"
+                    return "Player Two win"
         return "Draw"
 
 
