@@ -1,0 +1,17 @@
+cel:
+	napisz zestaw prgramow linii polecen, ktory beda obslugiwaly prosta liste rzeczy do zrobienia(TODO list)
+		-doday_wydarzenie
+		-usun_wydarzenie
+		-pokaz_liste
+	
+	kaze wydarzenie ma przypisaną data (deadline) oraz opis
+
+Struktura projerku:
+	paczka biblioteczna
+	src/
+		bin/   				-- z programem
+		lib.rs 				-- plik glowny biblioteki
+			modul date.rs		-- z typem Date	
+			modul event.rs		-- z typem Event
+			modul todo.rs		-- z typem ToDo
+				wszystkie moduly z testami
