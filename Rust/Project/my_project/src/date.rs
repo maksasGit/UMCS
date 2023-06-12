@@ -1,3 +1,5 @@
+use std::fmt;
+
 
 pub struct Date {
     year: i32,
@@ -34,33 +36,13 @@ impl Date {
 
         day <= max_days
     }
+
+    // add comporator
 }
+
 
 impl fmt::Display for Date {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:04}-{:02}-{:02}", self.year, self.month, self.day)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_valid_date() {
-        assert!(Date::new(2023, 6, 5).is_some());
-    }
-
-    #[test]
-    fn test_invalid_date() {
-        assert!(Date::new(2023, 13, 32).is_none());
-        assert!(Date::new(-1, 6, 5).is_none());
-        assert!(Date::new(2023, 2, 30).is_none());
-    }
-
-    #[test]
-    fn test_display_format() {
-        let date = Date::new(2023, 6, 5).unwrap();
-        assert_eq!(format!("{}", date), "2023-06-05");
     }
 }

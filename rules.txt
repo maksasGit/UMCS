@@ -1,1 +1,0 @@
-To add a code, create a folder for the programming language and a subfolder with the lesson and project name, and add a descriptive text 

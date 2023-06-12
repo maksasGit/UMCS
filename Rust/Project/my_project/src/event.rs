@@ -1,3 +1,5 @@
+use crate::date::Date;
+
 pub struct Event {
     date: Date,
     description: String,
@@ -15,4 +17,5 @@ impl Event {
     pub fn get_description(&self) -> &str {
         &self.description
     }
+
 }
