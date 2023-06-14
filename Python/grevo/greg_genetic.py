@@ -18,6 +18,10 @@ for i in range(len(y)):
     else:
         y[i] = [-1, -1, 1]
 
+
+print(X)
+print(y)
+
 plt.scatter(X[:50, 0], X[:50, 1], color='red', marker='o', label='setosa')
 plt.scatter(X[50:100, 0], X[50:100, 1], color='blue', marker='x', label='versicolor')
 plt.scatter(X[100:150, 0], X[100:150, 1], color='green', marker='^')
@@ -53,7 +57,11 @@ class GenAlg(object):
         for i in range(len(X)):
             x = X[i].reshape(len(X[0]))
             y_expected = Y[i]
+            # print("!",weights)
+            # print(">",x)
+            # print("?",biases)
             y_obtained = np.dot(weights, x) + biases
+            # print(":",y_obtained)
             y_obtained = self.softmax(y_obtained)
             for item, expected in zip(y_obtained, y_expected):
                 if (item == expected).all():
@@ -117,17 +125,17 @@ class GenAlg(object):
         return bad
 
 
-G = GenAlg()
-G.fit(X, y)
-print(G.population)
-
-plt.figure()
-plt.plot(G.best_individuals, label="Best individual")
-plt.plot(G.average_qualities, label="Average quality")
-plt.xlabel("Generation")
-plt.ylabel("Quality measure")
-plt.legend()
-plt.show()
-
-print(G.predict(X))
-print(G.missclassified(X, y))
+# G = GenAlg()
+# G.fit(X, y)
+# print(G.population)
+#
+# plt.figure()
+# plt.plot(G.best_individuals, label="Best individual")
+# plt.plot(G.average_qualities, label="Average quality")
+# plt.xlabel("Generation")
+# plt.ylabel("Quality measure")
+# plt.legend()
+# plt.show()
+#
+# print(G.predict(X))
+# print(G.missclassified(X, y))

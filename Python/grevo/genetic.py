@@ -1,6 +1,5 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score
 
 
 best = []
@@ -26,6 +25,8 @@ class Eugenics:
             print("Iteration №", iter)
             print("Max: ", np.max(results))
             print("Average: ", np.mean(results))
+            if (results[0] == 1):
+                break
 
         sorted_population = np.argsort([self.evaluation(chromosome) for chromosome in self.population])[::-1]
         for spicemen in self.population[sorted_population]:
@@ -48,38 +49,52 @@ class Eugenics:
         biases = chromosome[self.gen_size - 3:]
         global_accuracy = 0
         for i in range(len(self.tests)):
-            activations = np.dot(weights, self.tests[i].reshape(-1, 1)) + biases
-            print(".",activations)
-            predictions = np.where(activations >= 0, 1, -1)
+            activations = np.dot(weights, self.tests[i].reshape(len(self.tests[0]))) + biases
+            predictions = np.where(activations >= 0.0, 1, -1)
             accuracy = 0
-            print("!", predictions)
-            print("?", self.answers[i])
             for item, expected in zip(predictions, self.answers[i]):
-                print(item, " - ", expected)
                 if (item == expected).all():
                     accuracy += 1
-            print(accuracy)
             global_accuracy += accuracy / len(predictions)
         return global_accuracy / len(self.tests)
 
     def selection(self):
-        sorted_population = np.argsort([self.evaluation(chromosome) for chromosome in self.population])[::-1]
+        evaluations = [self.evaluation(chromosome) for chromosome in self.population]
+        sorted_population = np.argsort(evaluations)[::-1]
         self.population = self.population[sorted_population]
-        elite_population = self.population[:int(self.population_size*self.elite_procent)]
-        new_populataion = []
-        for iter in range(int(self.population_size-len(elite_population))):
-            parents_id = np.random.choice(int(self.population_size * self.parent_procent), 2 , replace=False)
+        elite_population = self.population[:int(self.population_size * self.elite_procent)]
+        new_population = []
+        for _ in range(int(self.population_size - len(elite_population))):
+            parents_id = np.random.choice( int(self.population_size * self.parent_procent), 2, replace=False,)
             parent1, parent2 = self.population[parents_id[0]], self.population[parents_id[1]]
             new_element = []
             for i in range(self.gen_size):
                 rand = np.random.rand()
-                if rand > 0.9:
-                    new_element.append(np.round(np.random.uniform(-1, 1), 2))
-                elif rand > 0.45:
+                if rand > 0.8:
+                    new_element.append(np.random.choice(self.possible_gens))
+                elif rand > 0.4:
                     new_element.append(parent1[i])
                 else:
                     new_element.append(parent2[i])
-            new_populataion.append(new_element)
-        self.population = np.concatenate((elite_population , new_populataion))
+            new_population.append(new_element)
+        self.population = np.concatenate((elite_population, new_population))
         return [self.evaluation(chromosome) for chromosome in self.population]
 
+    def missclassified(self, X, y):
+        weights = self.population[0][:self.gen_size - 3].reshape(3, 2)
+        biases = self.population[0][self.gen_size - 3:]
+        global_accuracy = 0
+        for i in range(len(X)):
+            activations = np.dot(weights, X[i].reshape(len(X[0]))) + biases
+            predictions = np.where(activations >= 0.0, 1, -1)
+            accuracy = 0
+            print(y[i] , " -- " , predictions ,end="")
+            for item, expected in zip(predictions, y[i]):
+                if (item == expected):
+                    accuracy += 1
+            if (accuracy != 3):
+                print( " : ", accuracy,  " (WRONG) ")
+            else:
+                print(" : ", accuracy,)
+            global_accuracy += accuracy
+        return global_accuracy
