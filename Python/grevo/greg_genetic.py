@@ -3,13 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 s = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
-print('URL:', s)
 df = pd.read_csv(s, header=None, encoding='utf-8')
 X = df.iloc[0:150, [0, 2]].values
 
 X[100:150] += [2, -3]
 y = df.iloc[0:150, 4].values
-
 for i in range(len(y)):
     if y[i] == 'Iris-setosa':
         y[i] = [1, -1, -1]
@@ -18,10 +16,6 @@ for i in range(len(y)):
     else:
         y[i] = [-1, -1, 1]
 
-
-print(X)
-print(y)
-
 plt.scatter(X[:50, 0], X[:50, 1], color='red', marker='o', label='setosa')
 plt.scatter(X[50:100, 0], X[50:100, 1], color='blue', marker='x', label='versicolor')
 plt.scatter(X[100:150, 0], X[100:150, 1], color='green', marker='^')
@@ -29,6 +23,7 @@ plt.xlabel('sepal length [cm]')
 plt.ylabel('petal length [cm]')
 plt.legend(loc='upper left')
 plt.show()
+
 
 class GenAlg(object):
     def __init__(self, genSize=9, maxIter=240, popSize=100):
@@ -57,11 +52,7 @@ class GenAlg(object):
         for i in range(len(X)):
             x = X[i].reshape(len(X[0]))
             y_expected = Y[i]
-            # print("!",weights)
-            # print(">",x)
-            # print("?",biases)
             y_obtained = np.dot(weights, x) + biases
-            # print(":",y_obtained)
             y_obtained = self.softmax(y_obtained)
             for item, expected in zip(y_obtained, y_expected):
                 if (item == expected).all():
@@ -107,7 +98,6 @@ class GenAlg(object):
     def fit(self, X, y):
         self.initialize_population()
         for iteration in range(self.maxIter):
-            print(iteration)
             population, positive_population = self.evaluate_population(self.population, X, y)
             self.best_individuals.append(positive_population[0])
             self.average_qualities.append(np.mean(positive_population))
@@ -125,17 +115,16 @@ class GenAlg(object):
         return bad
 
 
-# G = GenAlg()
-# G.fit(X, y)
-# print(G.population)
-#
-# plt.figure()
-# plt.plot(G.best_individuals, label="Best individual")
-# plt.plot(G.average_qualities, label="Average quality")
-# plt.xlabel("Generation")
-# plt.ylabel("Quality measure")
-# plt.legend()
-# plt.show()
-#
-# print(G.predict(X))
-# print(G.missclassified(X, y))
+G = GenAlg()
+G.fit(X, y)
+
+plt.figure()
+plt.plot(G.best_individuals, label="Best individual")
+plt.plot(G.average_qualities, label="Average quality")
+plt.xlabel("Generation")
+plt.ylabel("Quality measure")
+plt.legend()
+plt.show()
+
+print(G.predict(X))
+print(G.missclassified(X, y))
