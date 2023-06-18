@@ -10,7 +10,7 @@ class Eugenics:
         self.elite_procent = 0.1
         self.parent_procent = 0.5
 
-    def start_train(self, tests, answers, population_size=2000, iterations=2000):
+    def start_train(self, tests, answers, population_size=500, iterations=2000):
         self.tests = tests
         self.answers = answers
         self.population_size = population_size
@@ -52,17 +52,10 @@ class Eugenics:
             activations = np.dot(weights, self.tests[i].reshape(len(self.tests[0]))) + biases
             predictions = np.where(activations >= 0.0, 1, -1)
             accuracy = 0
-            koof = 0
             for item, expected in zip(predictions, self.answers[i]):
-                if item == 1:
-                    koof += 1
                 if (item == expected):
                     accuracy += 1
-            if (accuracy == len(predictions)):
-                global_accuracy += 0.4
-            if (koof == 1):
-                global_accuracy += 0.6
-           # global_accuracy += (accuracy / len(predictions))/2
+            global_accuracy += accuracy / len(predictions)
         return global_accuracy / len(self.tests)
 
     def selection(self):

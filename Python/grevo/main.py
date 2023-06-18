@@ -18,8 +18,8 @@ from genetic import Eugenics
 # for i, y in enumerate(Y_data):
 #     new_array[i][y] = 1
 # Y_data = new_array
-
-
+#
+#
 # print(X_data)
 # print(Y_data)
 #
@@ -30,10 +30,10 @@ from genetic import Eugenics
 # plt.ylabel('petal length [cm]')
 # plt.legend(loc='upper left')
 # plt.show()
-
-
+#
+#
 # X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size=0.2, random_state=42)
-
+#
 #
 # mem = Eugenics()
 # mem.start_train(X_data, Y_data)
@@ -65,4 +65,4 @@ print(my_outputs)
 kek = Eugenics()
 kek.start_train(my_pixels , my_outputs)
 print(kek.missclassified(my_pixels, my_outputs))
-# [ 0.   -0.56 -0.32  0.88  0.16 -0.16  0.96 -0.5  -0.84]  -  0.9933333333333333
+# # [ 0.   -0.56 -0.32  0.88  0.16 -0.16  0.96 -0.5  -0.84]  -  0.9933333333333333
